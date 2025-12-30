@@ -1,5 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const port = Number(process.env.PORT) || 4173;
+const localBaseURL = `http://127.0.0.1:${port}`;
+const externalBaseURL = 'https://kakurai49.github.io/stories/';
+const resolvedBaseURL =
+  process.env.BASE_URL ??
+  (process.env.RUN_EXTERNAL === '1' ? externalBaseURL : localBaseURL);
+
+const useLocalServer = process.env.RUN_EXTERNAL !== '1';
+
 export default defineConfig({
   testDir: './tests',
   /* Maximum time one test can run for. */
@@ -26,10 +35,17 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
     video: 'retain-on-failure',
-    // Allow overriding via BASE_URL to point to a local static server when external access is unreliable.
-    baseURL: process.env.BASE_URL ?? 'https://www.yahoo.com',
+    // BASE_URL > RUN_EXTERNAL external URL > local static server
+    baseURL: resolvedBaseURL,
     viewport: { width: 1280, height: 720 },
   },
+  webServer: useLocalServer
+    ? {
+        command: 'node scripts/static-server.mjs',
+        port,
+        reuseExistingServer: true,
+      }
+    : undefined,
   /* Configure projects for major browsers. */
   projects: [
     {
