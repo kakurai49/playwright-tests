@@ -2,7 +2,7 @@ import { expect, Page, test } from '@playwright/test';
 
 const port = process.env.PORT ?? '4173';
 const fallbackBaseURL = `http://127.0.0.1:${port}`;
-const externalYahooUrl = 'https://www.yahoo.com/';
+const externalYahooUrl = 'https://www.yahoo.co.jp/';
 
 const attachNetworkDiagnostics = (page: Page, label: string) => {
   page.on('requestfailed', (request) => {
