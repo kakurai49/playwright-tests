@@ -26,7 +26,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
     video: 'retain-on-failure',
-    baseURL: 'https://www.yahoo.com',
+    // Allow overriding via BASE_URL to point to a local static server when external access is unreliable.
+    baseURL: process.env.BASE_URL ?? 'https://www.yahoo.com',
     viewport: { width: 1280, height: 720 },
   },
   /* Configure projects for major browsers. */
