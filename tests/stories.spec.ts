@@ -1,6 +1,8 @@
 import { expect, Page, test } from '@playwright/test';
 
-const targetUrl = process.env.STORIES_URL ?? 'https://kakurai49.github.io/stories/';
+const port = process.env.PORT ?? '4173';
+const fallbackBaseURL = `http://127.0.0.1:${port}`;
+const externalStoriesUrl = 'https://kakurai49.github.io/stories/';
 
 const attachNetworkDiagnostics = (page: Page, label: string) => {
   page.on('requestfailed', (request) => {
@@ -12,42 +14,72 @@ const attachNetworkDiagnostics = (page: Page, label: string) => {
   });
 };
 
-test('Stories ページをスクリーンショットできる', async ({ page }) => {
-  let response;
-  let screenshotPage = page;
-  let fallbackUsed = false;
+const resolveStoriesUrl = (baseURL?: string) => {
+  if (process.env.BASE_URL) {
+    return new URL('/stories/', process.env.BASE_URL).toString();
+  }
 
-  attachNetworkDiagnostics(page, 'stories');
+  if (process.env.RUN_EXTERNAL === '1') {
+    return externalStoriesUrl;
+  }
 
-  try {
-    // domcontentloaded までを優先的に待つことで、ネットワーク遅延時でも早期に状態を把握する
-    response = await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  return new URL('/stories/', baseURL ?? fallbackBaseURL).toString();
+};
 
-    // Storybook のルート要素が付与されるまで待機し、描画確認用の同期ポイントを作る
+test.describe('Stories fixture (local)', () => {
+  test('ローカル fixture の Storybook root を確認できる', async ({ page, baseURL }) => {
+    const targetUrl = resolveStoriesUrl(baseURL);
+    attachNetworkDiagnostics(page, 'stories-local');
+
+    const response = await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 15_000 });
     await page.waitForSelector('#storybook-root', { timeout: 5_000 });
-  } catch (error) {
-    fallbackUsed = true;
-    console.error(`[goto-error] Failed to load ${targetUrl}:`, error);
-    console.warn('[fallback] network access failed, using local content');
+    await page.screenshot({ path: 'test-results/stories-page-local.png', fullPage: true });
 
-    screenshotPage = await page.context().newPage();
-    attachNetworkDiagnostics(screenshotPage, 'stories-fallback');
-    await screenshotPage.setContent(`
-      <main>
-        <h1>Stories ページにアクセスできませんでした</h1>
-        <p>${targetUrl} への接続でエラーが発生しました。</p>
-        <pre>${String(error)}</pre>
-      </main>
-    `);
-  }
+    await expect.soft(response?.status(), 'Stories fixture のステータスコード').toBeLessThan(400);
+  });
+});
 
-  await screenshotPage.screenshot({ path: 'test-results/stories-page.png', fullPage: true });
+test.describe('Stories external (opt-in)', () => {
+  test.skip(process.env.RUN_EXTERNAL !== '1', 'RUN_EXTERNAL=1 を指定した場合のみ外部疎通を試行します');
 
-  if (fallbackUsed) {
-    throw new Error('Stories page fallback was used; failing to surface network connectivity issues.');
-  }
+  test('Stories ページをスクリーンショットできる', async ({ page, baseURL }) => {
+    let response;
+    let screenshotPage = page;
+    let fallbackUsed = false;
 
-  if (response) {
-    await expect.soft(response.status(), 'Stories ページのステータスコード').toBeLessThan(400);
-  }
+    const targetUrl = resolveStoriesUrl(baseURL);
+    attachNetworkDiagnostics(page, 'stories');
+
+    try {
+      // domcontentloaded までを優先的に待つことで、ネットワーク遅延時でも早期に状態を把握する
+      response = await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+
+      // Storybook のルート要素が付与されるまで待機し、描画確認用の同期ポイントを作る
+      await page.waitForSelector('#storybook-root', { timeout: 5_000 });
+    } catch (error) {
+      fallbackUsed = true;
+      console.error(`[goto-error] Failed to load ${targetUrl}:`, error);
+      console.warn('[fallback] network access failed, using local content');
+
+      screenshotPage = await page.context().newPage();
+      attachNetworkDiagnostics(screenshotPage, 'stories-fallback');
+      await screenshotPage.setContent(`
+        <main>
+          <h1>Stories ページにアクセスできませんでした</h1>
+          <p>${targetUrl} への接続でエラーが発生しました。</p>
+          <pre>${String(error)}</pre>
+        </main>
+      `);
+    }
+
+    await screenshotPage.screenshot({ path: 'test-results/stories-page.png', fullPage: true });
+
+    if (fallbackUsed) {
+      throw new Error('Stories page fallback was used; failing to surface network connectivity issues.');
+    }
+
+    if (response) {
+      await expect.soft(response.status(), 'Stories ページのステータスコード').toBeLessThan(400);
+    }
+  });
 });

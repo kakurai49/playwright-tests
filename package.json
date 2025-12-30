@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:yahoo": "playwright test tests/yahoo.spec.ts",
-    "playwright:install": "playwright install chromium"
+    "test:list": "playwright test --list",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "playwright:install": "playwright install --with-deps"
   },
   "keywords": [],
   "author": "",
