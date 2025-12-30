@@ -1,0 +1,18 @@
+{
+  "name": "playwright-tests",
+  "version": "1.0.0",
+  "description": "Playwright を使った E2E テスト用リポジトリです。   Web アプリケーションの自動テストを目的としています。",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:yahoo": "playwright test tests/yahoo.spec.ts",
+    "playwright:install": "playwright install chromium"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0"
+  }
+}
