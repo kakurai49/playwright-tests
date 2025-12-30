@@ -16,10 +16,8 @@ const getContentType = (path) => {
 
 const server = http.createServer((req, res) => {
   const { url = '/' } = req;
-  const sanitizedPath = url.split('?')[0].replace(/\/+$/, '') || '/';
-  const targetPath = sanitizedPath.endsWith('/')
-    ? sanitizedPath + 'index.html'
-    : sanitizedPath;
+  const pathname = new URL(url, 'http://localhost').pathname;
+  const targetPath = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
 
   const resolvedPath = resolve(rootDir, '.' + targetPath);
 

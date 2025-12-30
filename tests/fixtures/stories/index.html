@@ -6,72 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       :root {
-        color-scheme: light;
+        color-scheme: light dark;
       }
       body {
-        font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        background: #f7f8fa;
-        color: #111;
-        margin: 0;
-        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 2rem;
+        line-height: 1.6;
       }
-      header {
-        background: linear-gradient(90deg, #5b8def, #7f6bff);
-        color: white;
-        padding: 1.5rem 2rem;
-      }
-      main {
-        max-width: 960px;
-        margin: 2rem auto;
-        padding: 0 1rem 2rem;
-      }
-      .story-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      #storybook-root {
+        border: 2px dashed #888;
         padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        background: #f9fafb;
+        color: #111;
       }
-      .pill {
-        display: inline-block;
-        background: #eef2ff;
-        color: #4338ca;
-        border-radius: 999px;
-        padding: 0.35rem 0.75rem;
-        font-weight: 600;
-        font-size: 0.85rem;
-        margin-right: 0.5rem;
+      h1 {
+        margin-top: 0;
+      }
+      ul {
+        padding-left: 1.4rem;
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      code {
+        background: #f1f5f9;
+        padding: 0.2rem 0.35rem;
+        border-radius: 0.35rem;
       }
     </style>
   </head>
   <body>
-    <div id="storybook-root">
-      <header>
-        <h1>Storybook Fixture</h1>
-        <p>外部 Storybook へのアクセスができない環境向けのスタブページです。</p>
-      </header>
-      <main>
-        <section class="story-card">
-          <h2>Button Component</h2>
-          <p>主要な UI コンポーネントをここで確認できます。</p>
-          <div>
-            <span class="pill">Primary</span>
-            <span class="pill">Secondary</span>
-            <span class="pill">Disabled</span>
-          </div>
-        </section>
-        <section class="story-card">
-          <h2>Form Elements</h2>
-          <p>入力フォームの状態やバリデーション表示を確認できます。</p>
-          <div>
-            <label>
-              名前:
-              <input type="text" placeholder="John Doe" />
-            </label>
-          </div>
-        </section>
-      </main>
-    </div>
+    <main id="storybook-root" aria-label="Stories fixture root">
+      <h1>Stories Fixture</h1>
+      <p>ローカル実行用の Storybook 代替ページです。</p>
+      <ul>
+        <li>外部 Stories に依存せずに <code>#storybook-root</code> を待機できます。</li>
+        <li>RUN_EXTERNAL=1 を指定した場合のみ外部 Stories にアクセスします。</li>
+      </ul>
+      <section>
+        <h2>サンプル Story</h2>
+        <article>
+          <h3>Button</h3>
+          <button type="button">Default Button</button>
+        </article>
+      </section>
+    </main>
   </body>
 </html>

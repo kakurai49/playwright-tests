@@ -5,60 +5,75 @@
     <title>Yahoo Fixture</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      :root {
+        color-scheme: light dark;
+      }
       body {
-        font-family: Arial, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-        margin: 0;
-        background: #f5f7fb;
-        color: #111;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 2rem;
+        line-height: 1.6;
+        background: #f8fafc;
+        color: #0f172a;
       }
       header {
-        background: #410093;
-        color: white;
-        padding: 1.2rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      [data-testid='yahoo-logo'] {
+        width: 160px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        background: #6001d2;
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: 0.03em;
       }
       main {
-        max-width: 960px;
-        margin: 2rem auto;
-        padding: 0 1rem;
+        padding: 1.5rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.75rem;
+        background: #fff;
       }
-      .headline {
-        background: white;
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-        border: 1px solid #e5e7eb;
-      }
-      .headline h2 {
-        margin-top: 0;
-      }
-      nav ul {
+      form {
         display: flex;
-        gap: 1rem;
-        list-style: none;
-        padding: 0;
+        gap: 0.5rem;
       }
-      nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
+      input[type='search'] {
+        flex: 1;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e1;
+      }
+      button {
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e1;
+        background: #e0e7ff;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1 data-testid="yahoo-logo">Yahoo! Fixture</h1>
-      <nav>
-        <ul>
-          <li><a href="#news">ニュース</a></li>
-          <li><a href="#shopping">ショッピング</a></li>
-          <li><a href="#mail">メール</a></li>
-        </ul>
-      </nav>
+      <div data-testid="yahoo-logo" aria-label="Yahoo! Japan Logo">Yahoo!</div>
+      <strong>Yahoo Fixture</strong>
     </header>
     <main>
-      <section class="headline" id="news">
-        <h2>主要なニュースの見出しをここに表示します。</h2>
-        <p>外部 Yahoo! へ到達できない場合の確認用コンテンツです。</p>
+      <form aria-label="Fixture search form">
+        <input type="search" placeholder="検索キーワードを入力" />
+        <button type="submit">検索</button>
+      </form>
+      <section>
+        <h2>ニュースの例</h2>
+        <ul>
+          <li>ネットワーク依存なしで UI の存在チェックが可能です。</li>
+          <li>RUN_EXTERNAL=1 の場合のみ実サイトへアクセスします。</li>
+        </ul>
       </section>
     </main>
   </body>
